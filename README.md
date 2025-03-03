@@ -1,50 +1,139 @@
-# Welcome to your Expo app 👋
+# BlogPosts App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Um aplicativo de blog desenvolvido em React Native com recursos de CRUD, gerenciamento de estado, suporte offline e muito mais.
 
-## Get started
+## 📱 Funcionalidades
 
-1. Install dependencies
+- **Tela Inicial**: Lista de postagens com funcionalidade de favoritar e busca por título/conteúdo
+- **Criar Postagem**: Formulário para criação de novas postagens
+- **Detalhes da Postagem**: Visualização do conteúdo completo, comentários e perfil do autor
+- **Perfil do Usuário**: Informações do usuário e lista de suas postagens
+- **Favoritos**: Gerenciamento de postagens favoritas com persistência local
 
-   ```bash
-   npm install
-   ```
+## 📚 Stack Tecnológica
 
-2. Start the app
+- **React Native** - Framework para desenvolvimento mobile multiplataforma
+- **TypeScript** - Superset JavaScript com tipagem estática
+- **Expo Router** - Sistema de navegação baseado em arquivo para Expo
+- **Styled Components** - Estilização de componentes com CSS-in-JS
+- **Redux Toolkit** - Gerenciamento de estado global
+- **Context API** - Gerenciamento de estados locais
+- **AsyncStorage** - Persistência de dados local
+- **Axios** - Cliente HTTP para consumo de APIs
+- **Offline First** - Suporte para funcionamento sem conexão
 
-   ```bash
-    npx expo start
-   ```
+## 🔧 Ferramentas e Bibliotecas
 
-In the output, you'll find options to open the app in a
+- **UI/UX**
+  - Styled Components para estilização consistente
+  - React Native Reanimated para animações fluidas
+  - Expo Vector Icons para iconografia
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- **Gerenciamento de Estado**
+  - Redux com Redux Toolkit para estado global
+  - Context API para estados específicos de componentes
+  - Hooks personalizados para lógica reutilizável
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- **Armazenamento**
+  - AsyncStorage para persistência local
+  - Estratégia de cache para funcionamento offline
 
-## Get a fresh project
+- **Networking**
+  - Axios para consumo da API
+  - JSONPlaceholder como backend de exemplo
 
-When you're ready, run:
+## 🧩 Arquitetura
 
-```bash
-npm run reset-project
+A aplicação segue uma arquitetura modular baseada em recursos:
+
+```
+/app
+  /app                   # Rotas e navegação (Expo Router)
+    /tabs                # Navegação por abas
+    /post                # Telas de posts
+    /user                # Telas de usuários
+  /components            # Componentes reutilizáveis
+    /ui                  # Componentes UI básicos
+    /post                # Componentes relacionados a posts
+    /comment             # Componentes relacionados a comentários
+    /user                # Componentes relacionados a usuários
+  /services              # Serviços e API
+  /store                 # Estado global (Redux)
+   /reducers             # Slices do Redux Toolkit
+  /types                 # Definições de tipos
+  /utils                 # Utilitários e helpers
+  /hooks                 # Hooks personalizados
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## 📦 Instalação e Uso
 
-## Learn more
+### Pré-requisitos
 
-To learn more about developing your project with Expo, look at the following resources:
+- Node.js 18+
+- npm ou yarn
+- Expo CLI (`npm install -g expo-cli`)
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### Passos para instalação
 
-## Join the community
+1. Clone o repositório
+   ```bash
+   git clone https://github.com/guilhermehub12/BlogPosts.git
+   cd BlogPosts
+   ```
 
-Join our community of developers creating universal apps.
+2. Instale as dependências
+   ```bash
+   npm install
+   # ou
+   yarn install
+   ```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+3. Inicie o aplicativo
+   ```bash
+   npx expo start
+   ```
+
+4. Abra o aplicativo no emulador ou dispositivo físico
+   - Pressione `a` para abrir no emulador Android
+   - Pressione `i` para abrir no emulador iOS
+   - Ou escaneie o QR code com o aplicativo Expo Go no seu dispositivo
+
+## 💡 Decisões Técnicas
+
+### Por que TypeScript?
+TypeScript foi escolhido para adicionar tipagem estática, melhorando a qualidade do código e a experiência de desenvolvimento com autocomplete e detecção de erros em tempo de compilação.
+
+### Por que Expo?
+Expo foi utilizado para facilitar o desenvolvimento e testes, permitindo executar o aplicativo em dispositivos físicos sem a necessidade de configurações complexas.
+
+### Por que Redux + Context API?
+Redux foi usado para gerenciar o estado global da aplicação (posts, usuários, favoritos), enquanto Context API foi utilizado para estados mais locais. Esta combinação oferece flexibilidade e evita o boilerplate excessivo.
+
+### Por que Styled Components?
+Styled Components permite criar componentes com estilos encapsulados, tornando o código mais legível e manutenível, além de facilitar a criação de temas e variantes de componentes.
+
+### Por que AsyncStorage?
+AsyncStorage foi implementado para persistência de dados e suporte offline, permitindo que o aplicativo mantenha seus dados mesmo quando o usuário sai do aplicativo ou perde a conexão.
+
+## ✨ Recursos Adicionais
+
+- **Animações**: Micros interações animadas para melhor feedback visual
+- **Offline First**: Funcionamento básico sem conexão com internet
+- **Avatar de Usuário**: Geração de avatares baseados no nome usando ui-avatars.com
+- **Busca Otimizada**: Busca em tempo real de posts por título e conteúdo
+- **Paginação**: Implementada para listas grandes de posts
+
+## 📝 Melhorias Futuras
+
+- Implementação de testes unitários e de integração
+- Autenticação de usuários
+- Melhorias na performance de listas longas
+- Modo escuro/claro com tema persistente
+
+## 👤 Autor
+
+Desenvolvido por [Guilherme](https://github.com/guilhermehub12) como parte do desafio técnico para a vaga de Desenvolvedor Front-End/Mobile na Soffia.
+
+## 📄 Licença
+
+Este projeto está licenciado sob a licença MIT - veja o arquivo [LICENSE](LICENSE) para mais detalhes.
