@@ -1,96 +1,143 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { Types, postsService } from "../../api";
+import { Post, CreatePostPayload } from "../../types/post";
+import { postService } from "../../services/api/posts";
 
-interface PostsState {
-  posts: Types.Post[];
-  currentPost: Types.Post | null;
-  comments: any[];
+interface PostState {
+  posts: Post[];
+  currentPost: Post | null;
   loading: boolean;
   error: string | null;
 }
 
-const initialState: PostsState = {
+const initialState: PostState = {
   posts: [],
   currentPost: null,
-  comments: [],
   loading: false,
   error: null,
 };
 
 export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
-  const response = await postsService.getAllPosts();
-  return response.data;
+  return await postService.getAllPosts();
 });
 
 export const fetchPostById = createAsyncThunk(
   "posts/fetchPostById",
   async (id: number) => {
-    const response = await postsService.getPostById(id);
-    return response.data;
+    return await postService.getPostById(id);
   }
 );
 
-export const fetchPostComments = createAsyncThunk(
-  "posts/fetchPostComments",
-  async (id: number) => {
-    const response = await postsService.getPostComments(id);
-    return response.data;
+export const fetchPostsByUser = createAsyncThunk(
+  "posts/fetchPostsByUser",
+  async (userId: number) => {
+    return await postService.getPostsByUser(userId);
   }
 );
 
 export const createPost = createAsyncThunk(
   "posts/createPost",
-  async (data: Omit<Types.Post, "id">) => {
-    const response = await postsService.createPost(data);
-    return response.data;
+  async (post: CreatePostPayload) => {
+    return await postService.createPost(post);
   }
 );
 
-const postsSlice = createSlice({
+export const searchPosts = createAsyncThunk(
+  "posts/searchPosts",
+  async (query: string) => {
+    return await postService.searchPosts(query);
+  }
+);
+
+const postSlice = createSlice({
   name: "posts",
   initialState,
   reducers: {
     clearCurrentPost: (state) => {
       state.currentPost = null;
     },
-    addPost: (state, action: PayloadAction<Types.Post>) => {
-      state.posts.unshift(action.payload);
-    },
   },
   extraReducers: (builder) => {
     builder
+      // mostra todos os posts
       .addCase(fetchPosts.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(
-        fetchPosts.fulfilled,
-        (state, action: PayloadAction<Types.Post[]>) => {
-          state.loading = false;
-          state.posts = action.payload;
-        }
-      )
+      .addCase(fetchPosts.fulfilled, (state, action: PayloadAction<Post[]>) => {
+        state.loading = false;
+        state.posts = action.payload;
+      })
       .addCase(fetchPosts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch posts";
       })
+
+      // pesquisa post por id
+      .addCase(fetchPostById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(
         fetchPostById.fulfilled,
-        (state, action: PayloadAction<Types.Post>) => {
+        (state, action: PayloadAction<Post>) => {
+          state.loading = false;
           state.currentPost = action.payload;
         }
       )
-      .addCase(fetchPostComments.fulfilled, (state, action) => {
-        state.comments = action.payload;
+      .addCase(fetchPostById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch post";
+      })
+
+      // Pesquisa post por usuario
+      .addCase(fetchPostsByUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
       .addCase(
-        createPost.fulfilled,
-        (state, action: PayloadAction<Types.Post>) => {
-          state.posts.unshift(action.payload);
+        fetchPostsByUser.fulfilled,
+        (state, action: PayloadAction<Post[]>) => {
+          state.loading = false;
+          state.posts = action.payload;
         }
-      );
+      )
+      .addCase(fetchPostsByUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch user posts";
+      })
+
+      // Criar
+      .addCase(createPost.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createPost.fulfilled, (state, action: PayloadAction<Post>) => {
+        state.loading = false;
+        state.posts = [action.payload, ...state.posts];
+      })
+      .addCase(createPost.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to create post";
+      })
+
+      // Pesquisar
+      .addCase(searchPosts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        searchPosts.fulfilled,
+        (state, action: PayloadAction<Post[]>) => {
+          state.loading = false;
+          state.posts = action.payload;
+        }
+      )
+      .addCase(searchPosts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to search posts";
+      });
   },
 });
 
-export const { clearCurrentPost, addPost } = postsSlice.actions;
-export default postsSlice.reducer;
+export const { clearCurrentPost } = postSlice.actions;
+export default postSlice.reducer;

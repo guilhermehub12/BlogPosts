@@ -1,42 +1,42 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { Types, usersService } from "../../api";
+import { User, UserProfile } from "../../types/user";
+import { userService } from "../../services/api/users";
 
-interface UsersState {
-  currentUser: Types.User | null;
-  userPosts: any[];
+interface UserState {
+  currentUser: UserProfile | null;
+  viewedUser: UserProfile | null;
   loading: boolean;
   error: string | null;
 }
 
-const initialState: UsersState = {
+const initialState: UserState = {
   currentUser: null,
-  userPosts: [],
+  viewedUser: null,
   loading: false,
   error: null,
 };
 
 export const fetchUserById = createAsyncThunk(
   "users/fetchUserById",
-  async (id: number) => {
-    const response = await usersService.getUserById(id);
-    return response.data;
+  async (userId: number) => {
+    const user = await userService.getUserById(userId);
+    // Adiciona o avatar ao usuário
+    return {
+      ...user,
+      avatar: userService.generateUserAvatar(user.name),
+    };
   }
 );
 
-export const fetchUserPosts = createAsyncThunk(
-  "users/fetchUserPosts",
-  async (id: number) => {
-    const response = await usersService.getUserPosts(id);
-    return response.data;
-  }
-);
-
-const usersSlice = createSlice({
+const userSlice = createSlice({
   name: "users",
   initialState,
   reducers: {
-    clearCurrentUser: (state) => {
-      state.currentUser = null;
+    setCurrentUser: (state, action: PayloadAction<UserProfile>) => {
+      state.currentUser = action.payload;
+    },
+    clearViewedUser: (state) => {
+      state.viewedUser = null;
     },
   },
   extraReducers: (builder) => {
@@ -47,20 +47,17 @@ const usersSlice = createSlice({
       })
       .addCase(
         fetchUserById.fulfilled,
-        (state, action: PayloadAction<Types.User>) => {
+        (state, action: PayloadAction<UserProfile>) => {
           state.loading = false;
-          state.currentUser = action.payload;
+          state.viewedUser = action.payload;
         }
       )
       .addCase(fetchUserById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch user";
-      })
-      .addCase(fetchUserPosts.fulfilled, (state, action) => {
-        state.userPosts = action.payload;
       });
   },
 });
 
-export const { clearCurrentUser } = usersSlice.actions;
-export default usersSlice.reducer;
+export const { setCurrentUser, clearViewedUser } = userSlice.actions;
+export default userSlice.reducer;

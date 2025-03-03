@@ -1,48 +1,34 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Post } from "../../types/post";
 
-interface FavoritesState {
-  favorites: number[];
-  loading: boolean;
+interface FavoriteState {
+  favoritePosts: Post[];
 }
 
-const initialState: FavoritesState = {
-  favorites: [],
-  loading: false,
+const initialState: FavoriteState = {
+  favoritePosts: [],
 };
 
-export const loadFavorites = createAsyncThunk(
-  "favorites/loadFavorites",
-  async () => {
-    const storedFavorites = await AsyncStorage.getItem("favorites");
-    return storedFavorites ? JSON.parse(storedFavorites) : [];
-  }
-);
-
-const favoritesSlice = createSlice({
+const favoriteSlice = createSlice({
   name: "favorites",
   initialState,
   reducers: {
-    toggleFavorite: (state, action: PayloadAction<number>) => {
-      const postId = action.payload;
-      const index = state.favorites.indexOf(postId);
-
-      if (index === -1) {
-        state.favorites.push(postId);
-      } else {
-        state.favorites.splice(index, 1);
+    addFavorite: (state, action: PayloadAction<Post>) => {
+      if (!state.favoritePosts.some((post) => post.id === action.payload.id)) {
+        state.favoritePosts.push(action.payload);
       }
-
-      // Persistir no AsyncStorage (BD local)
-      AsyncStorage.setItem("favorites", JSON.stringify(state.favorites));
     },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(loadFavorites.fulfilled, (state, action) => {
-      state.favorites = action.payload;
-    });
+    removeFavorite: (state, action: PayloadAction<number>) => {
+      state.favoritePosts = state.favoritePosts.filter(
+        (post) => post.id !== action.payload
+      );
+    },
+    setFavorites: (state, action: PayloadAction<Post[]>) => {
+      state.favoritePosts = action.payload;
+    },
   },
 });
 
-export const { toggleFavorite } = favoritesSlice.actions;
-export default favoritesSlice.reducer;
+export const { addFavorite, removeFavorite, setFavorites } =
+  favoriteSlice.actions;
+export default favoriteSlice.reducer;
