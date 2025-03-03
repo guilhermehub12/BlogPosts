@@ -1,11 +1,12 @@
 import { ENDPOINTS } from './endpoints';
+import commentsService from './services/comments.service';
 import postsService from './services/posts.service';
 import usersService from './services/users.service';
-import commentsService from './services/comments.service';
 
-export {
-  ENDPOINTS,
-  postsService,
-  usersService,
-  commentsService
+export default {
+  posts: postsService,
+  users: usersService,
+  comments: commentsService,
 };
+
+export { ENDPOINTS };
