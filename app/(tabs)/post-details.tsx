@@ -162,7 +162,7 @@ const PostDetailsScreen = () => {
     };
 
     const handleAuthorPress = (userId: number) => {
-        navigation.navigate('UserProfile', { userId });
+        navigation.navigate('UserProfile' as never, { userId } as never);
     };
 
     const checkIfFavorite = async () => {

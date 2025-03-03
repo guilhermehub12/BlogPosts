@@ -1,4 +1,4 @@
-import { Tabs, Tab } from 'expo-router';
+import { Tabs } from 'expo-router';
 import React, { useEffect } from 'react';
 import { Platform } from 'react-native';
 import { useAppDispatch } from '../store/hooks';
@@ -34,15 +34,15 @@ export default function TabLayout() {
           default: {},
         }),
       }}>
-      <Tab
+      <Tabs.Screen
         name="index"
         options={{
           title: 'Início',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
-
-      <Tab
+      
+      <Tabs.Screen
         name="create-post"
         options={{
           title: 'Criar Post',
@@ -52,16 +52,16 @@ export default function TabLayout() {
           headerShown: true,
         }}
       />
-
-      <Tab
+      
+      <Tabs.Screen
         name="favorites"
         options={{
           title: 'Favoritos',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
         }}
       />
-
-      <Tab
+      
+      <Tabs.Screen
         name="profile"
         options={{
           title: 'Perfil',

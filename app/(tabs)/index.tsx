@@ -56,15 +56,15 @@ const HomeScreen = () => {
   };
 
   const handlePostPress = (postId: number) => {
-    navigation.navigate('PostDetails', { postId });
+    navigation.navigate('PostDetails' as never, { postId } as never);
   };
 
   const handleAuthorPress = (userId: number) => {
-    navigation.navigate('UserProfile', { userId });
+    navigation.navigate('UserProfile' as never, { userId } as never);
   };
 
   const handleCreatePost = () => {
-    navigation.navigate('CreatePost');
+    navigation.navigate('CreatePost' as never);
   };
 
   return (

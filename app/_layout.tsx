@@ -1,17 +1,12 @@
-// src/app/layout.tsx
 import React, { useEffect } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { Stack } from 'expo-router';
 import { Provider } from 'react-redux';
 import { store } from './store';
-import TabLayout from './(tabs)/_layout';
 import { userStorage } from './utils/storage';
 import { setCurrentUser } from './store/reducers/usersSlice';
 import { StatusBar } from 'react-native';
 
-const Stack = createStackNavigator();
-
-const RootLayout = () => {
+export default function RootLayout() {
   useEffect(() => {
     // Carrega o usuário atual do storage ao iniciar o app
     const loadCurrentUser = async () => {
@@ -44,13 +39,12 @@ const RootLayout = () => {
   return (
     <Provider store={store}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-      <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Root" component={TabLayout} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="post/[id]" />
+        <Stack.Screen name="user/[id]" />
+        <Stack.Screen name="+not-found" />
+      </Stack>
     </Provider>
   );
-};
-
-export default RootLayout;
+}
